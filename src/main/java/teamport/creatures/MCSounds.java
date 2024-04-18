@@ -62,5 +62,12 @@ public class MCSounds {
 		SoundHelper.Client.addSound(MOD_ID, "beargrunt5.ogg");
 		SoundHelper.Client.addSound(MOD_ID, "bearhurt1.ogg");
 		SoundHelper.Client.addSound(MOD_ID, "bearhurt2.ogg");
+
+		// Deet
+		// B stands for baby, I guess?
+		SoundHelper.Client.addSound(MOD_ID, "deerbgrunt.ogg");
+		SoundHelper.Client.addSound(MOD_ID, "deerfgrunt.ogg");
+		SoundHelper.Client.addSound(MOD_ID, "deerhurt.ogg");
+		SoundHelper.Client.addSound(MOD_ID, "deerdying.ogg");
 	}
 }

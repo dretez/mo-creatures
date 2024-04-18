@@ -5,6 +5,7 @@ import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.EntityItem;
 import net.minecraft.core.entity.animal.EntityAnimal;
 import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.core.item.Item;
 import net.minecraft.core.util.helper.DamageType;
 import net.minecraft.core.util.helper.MathHelper;
 import net.minecraft.core.util.phys.AABB;
@@ -115,6 +116,11 @@ public class EntityBoar extends EntityAnimal {
 
 	protected String getDeathSound() {
 		return "mob.pigdeath";
+	}
+
+	@Override
+	protected int getDropItemId() {
+		return isOnFire() ? Item.foodPorkchopCooked.id : Item.foodPorkchopRaw.id;
 	}
 
 	@Override

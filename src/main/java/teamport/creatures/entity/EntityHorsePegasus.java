@@ -119,7 +119,7 @@ public class EntityHorsePegasus extends EntityHorse {
 			if (this.passenger == null) {
 				super.jump();
 			} else {
-				this.yd = 0.42;
+				this.yd = 0.21;
 				if (this.isSprinting()) {
 					float f = this.yRot * 0.01745329F;
 					this.xd -= MathHelper.sin(f) * 0.2F;

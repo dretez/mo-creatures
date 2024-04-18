@@ -15,6 +15,7 @@ public class MCEntities {
 		EntityHelper.Core.createEntity(EntityHorsePegasus.class, 107, "Pegasus");
 		EntityHelper.Core.createEntity(EntityBear.class, 108, "Bear");
 		EntityHelper.Core.createEntity(EntityBearPolar.class, 109, "PolarBear");
+		EntityHelper.Core.createEntity(EntityDeer.class, 110, "Deer");
 	}
 
 	public static void initEntityClient() {
@@ -28,5 +29,6 @@ public class MCEntities {
 		EntityHelper.Client.assignEntityRenderer(EntityHorsePegasus.class, new HorsePegasusRenderer());
 		EntityHelper.Client.assignEntityRenderer(EntityBear.class, new BearRenderer());
 		EntityHelper.Client.assignEntityRenderer(EntityBearPolar.class, new BearRenderer());
+		EntityHelper.Client.assignEntityRenderer(EntityDeer.class, new DeerRenderer());
 	}
 }

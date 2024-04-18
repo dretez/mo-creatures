@@ -23,6 +23,7 @@ public abstract class BiomeMixin {
 		spawnableCreatureList.add(new SpawnListEntry(EntityBoar.class, 25));
 		spawnableCreatureList.add(new SpawnListEntry(EntityBunny.class, 51));
 		spawnableCreatureList.add(new SpawnListEntry(EntityBird.class, 102));
+		spawnableCreatureList.add(new SpawnListEntry(EntityDeer.class, 25));
 		spawnableCreatureList.add(new SpawnListEntry(EntityHorse.class, 51));
 		spawnableCreatureList.add(new SpawnListEntry(EntityHorseUnicorn.class, 1));
 		spawnableCreatureList.add(new SpawnListEntry(EntityHorsePegasus.class, 1));
