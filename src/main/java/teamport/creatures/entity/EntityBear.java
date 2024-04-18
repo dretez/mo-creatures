@@ -17,7 +17,7 @@ public class EntityBear extends EntityAnimal {
 	public EntityBear(World world) {
 		super(world);
 		this.setSize(2.0F, 2.0F);
-		this.health = 30;
+		this.heartsHalvesLife = 30;
 	}
 
 	@Override

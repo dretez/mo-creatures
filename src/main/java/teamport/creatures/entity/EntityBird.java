@@ -25,7 +25,7 @@ public class EntityBird extends EntityAnimal {
 
 	public EntityBird(World world) {
 		super(world);
-		this.health = 5;
+		this.heartsHalvesLife = 5;
 		this.setSize(0.25F, 0.25F);
 		this.skinVariant = random.nextInt(6);
 	}

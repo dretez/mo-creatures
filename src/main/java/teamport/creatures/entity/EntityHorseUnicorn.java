@@ -62,7 +62,8 @@ public class EntityHorseUnicorn extends EntityHorse {
 				player.yd += 1F;
 				player.xd -= this.yRot * 0.0015F;
 				this.ejectRider();
-				this.world.playSoundAtEntity(this,
+				this.world.playSoundAtEntity(null,
+					this,
 					"creatures.horsemad",
 					this.getSoundVolume(),
 					(this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
@@ -70,6 +71,12 @@ public class EntityHorseUnicorn extends EntityHorse {
 
 			if (tameCounter++ >= 1200) {
 				this.tamed = true;
+
+				double randX = x + random.nextDouble();
+				double randY = y + random.nextDouble();
+				double randZ = z + random.nextDouble();
+
+				world.spawnParticle("heart", randX, randY + 0.22, randZ, 0.0, 0.2, 0.0);
 			}
 		}
 	}

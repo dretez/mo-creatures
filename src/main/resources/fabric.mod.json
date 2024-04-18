@@ -39,8 +39,6 @@
 		"creatures.mixins.json"
   ],
 
-	"accessWidener": "creatures.accesswidener",
-
   "depends": {
     "fabricloader": ">=0.13.3"
   },

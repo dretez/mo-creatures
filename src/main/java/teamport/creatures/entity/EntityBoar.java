@@ -17,8 +17,8 @@ public class EntityBoar extends EntityAnimal {
 	private int angerCounter;
 	public EntityBoar(World world) {
 		super(world);
-		setSize(0.9F, 0.9F);
-		health = 10;
+		this.setSize(0.9F, 0.9F);
+		this.heartsHalvesLife = 10;
 	}
 
 	@Override
@@ -83,10 +83,26 @@ public class EntityBoar extends EntityAnimal {
 
 	@Override
 	public void playLivingSound() {
-		world.playSoundAtEntity(this,
-			getLivingSound(),
-			getSoundVolume(),
-			(this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 0.6F);
+		String s = this.getLivingSound();
+		if (s != null && !this.world.isClientSide) {
+			this.world.playSoundAtEntity(null, this, s, this.getSoundVolume(), (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 0.6F);
+		}
+	}
+
+	@Override
+	public void playHurtSound() {
+		String s = this.getHurtSound();
+		if (s != null && !this.world.isClientSide) {
+			this.world.playSoundAtEntity(null, this, s, this.getSoundVolume(), (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 0.6F);
+		}
+	}
+
+	@Override
+	public void playDeathSound() {
+		String s = this.getDeathSound();
+		if (s != null && !this.world.isClientSide) {
+			this.world.playSoundAtEntity(null, this, s, this.getSoundVolume(), (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 0.6F);
+		}
 	}
 
 	public String getLivingSound() {

@@ -28,11 +28,6 @@ public class BirdModel extends BenchEntityModel {
 				.setRotationAngle((float)Math.toRadians(headPitch), (float)Math.toRadians(headYaw), 0.0F);
 		}
 
-		if (this.getIndexBones().containsKey("body")) {
-			this.getIndexBones().get("body")
-				.rotateAngleX = -0.20F;
-		}
-
 		if (this.getIndexBones().containsKey("tail")) {
 			this.getIndexBones().get("tail")
 				.rotateAngleX = 0.25F;

@@ -19,7 +19,7 @@ public class EntityFox extends EntityAnimal {
 
 	public EntityFox(World world) {
 		super(world);
-		this.health = 10;
+		this.heartsHalvesLife = 10;
 	}
 
 	@Override

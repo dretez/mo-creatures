@@ -67,7 +67,8 @@ public class EntityHorsePegasus extends EntityHorse {
 				player.yd += 1F;
 				player.xd -= this.yRot * 0.0015F;
 				this.ejectRider();
-				this.world.playSoundAtEntity(this,
+				this.world.playSoundAtEntity(null,
+					this,
 					"creatures.horsemad",
 					this.getSoundVolume(),
 					(this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
@@ -79,6 +80,12 @@ public class EntityHorsePegasus extends EntityHorse {
 
 			if (tameCounter++ >= 1600) {
 				this.tamed = true;
+
+				double randX = x + random.nextDouble();
+				double randY = y + random.nextDouble();
+				double randZ = z + random.nextDouble();
+
+				world.spawnParticle("heart", randX, randY + 0.22, randZ, 0.0, 0.2, 0.0);
 			}
 		}
 	}
@@ -86,6 +93,7 @@ public class EntityHorsePegasus extends EntityHorse {
 	@Override
 	public void moveEntityWithHeading(float moveStrafing, float moveForward) {
 		if (this.passenger != null && this.saddled) {
+			if (passenger instanceof EntityPlayerSP) {
 				PlayerInput passengerInput = ((EntityPlayerSP) passenger).input;
 				if (passengerInput.jump && this.y < (double) this.world.getHeightBlocks() / 2) this.jump();
 				this.yRot = passenger.yRot;
@@ -99,22 +107,24 @@ public class EntityHorsePegasus extends EntityHorse {
 				}
 
 				super.moveEntityWithHeading(passengerInput.moveStrafe, passengerInput.moveForward);
-			} else {
+			}
+		} else {
 			super.moveEntityWithHeading(moveStrafing, moveForward);
 		}
 	}
 
 	@Override
 	protected void jump() {
-		if (this.passenger == null) {
-			super.jump();
-		}
-		else {
-			this.yd = 0.42;
-			if (this.isSprinting()) {
-				float f = this.yRot * 0.01745329F;
-				this.xd -= MathHelper.sin(f) * 0.2F;
-				this.zd += MathHelper.cos(f) * 0.2F;
+		if (!this.world.isClientSide) {
+			if (this.passenger == null) {
+				super.jump();
+			} else {
+				this.yd = 0.42;
+				if (this.isSprinting()) {
+					float f = this.yRot * 0.01745329F;
+					this.xd -= MathHelper.sin(f) * 0.2F;
+					this.zd += MathHelper.cos(f) * 0.2F;
+				}
 			}
 		}
 	}
