@@ -13,13 +13,12 @@ import net.minecraft.core.world.World;
 import java.util.List;
 
 public class EntityBoar extends EntityAnimal {
-	boolean angry;
-	int angerCounter;
-
+	private boolean angry;
+	private int angerCounter;
 	public EntityBoar(World world) {
 		super(world);
-		setSize(0.9F, 0.9F);
-		health = 10;
+		this.setSize(0.9F, 0.9F);
+		this.heartsHalvesLife = 10;
 	}
 
 	@Override
@@ -35,18 +34,12 @@ public class EntityBoar extends EntityAnimal {
 	@Override
 	public void tick() {
 		super.tick();
-		if (angerCounter-- > 0) {
-			angry = true;
-		} else {
-			angry = false;
-		}
+        angry = angerCounter-- > 0 && this.world.difficultySetting != 0;
 	}
 
 	@Override
 	public boolean hurt(Entity attacker, int damage, DamageType type) {
-		if (attacker instanceof EntityPlayer) {
-			this.angerCounter = 400;
-		}
+		this.angerCounter = 400;
 		return super.hurt(attacker, damage, type);
 	}
 
@@ -62,7 +55,6 @@ public class EntityBoar extends EntityAnimal {
 			if (!(distance > 2.0F) || !(distance < 6.0F) || this.random.nextInt(10) != 0) {
 				if ((double)distance < 1.5 && entity.bb.maxY > this.bb.minY && entity.bb.minY < this.bb.maxY) {
 					this.attackTime = 20;
-
 					entity.hurt(this, 2, DamageType.COMBAT);
 				}
 			} else if (this.onGround) {
@@ -84,17 +76,33 @@ public class EntityBoar extends EntityAnimal {
 				.getEntitiesWithinAABB(
 					EntityPlayer.class, AABB.getBoundingBoxFromPool(this.x, this.y, this.z, this.x + 1.0, this.y + 1.0, this.z + 1.0).expand(16.0, 4.0, 16.0)
 				);
-			if (!nearbyPlayers.isEmpty())
+			if (!nearbyPlayers.isEmpty() && this.world.difficultySetting != 0)
 				this.setTarget(nearbyPlayers.get(this.world.rand.nextInt(nearbyPlayers.size())));
 		}
 	}
 
 	@Override
 	public void playLivingSound() {
-		world.playSoundAtEntity(this,
-			getLivingSound(),
-			getSoundVolume(),
-			(this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 0.6F);
+		String s = this.getLivingSound();
+		if (s != null && !this.world.isClientSide) {
+			this.world.playSoundAtEntity(null, this, s, this.getSoundVolume(), (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 0.6F);
+		}
+	}
+
+	@Override
+	public void playHurtSound() {
+		String s = this.getHurtSound();
+		if (s != null && !this.world.isClientSide) {
+			this.world.playSoundAtEntity(null, this, s, this.getSoundVolume(), (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 0.6F);
+		}
+	}
+
+	@Override
+	public void playDeathSound() {
+		String s = this.getDeathSound();
+		if (s != null && !this.world.isClientSide) {
+			this.world.playSoundAtEntity(null, this, s, this.getSoundVolume(), (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 0.6F);
+		}
 	}
 
 	public String getLivingSound() {
@@ -112,12 +120,14 @@ public class EntityBoar extends EntityAnimal {
 	@Override
 	public void addAdditionalSaveData(CompoundTag tag) {
 		super.addAdditionalSaveData(tag);
+		tag.putBoolean("Angry", this.angry);
 		tag.putInt("Anger", this.angerCounter);
 	}
 
 	@Override
 	public void readAdditionalSaveData(CompoundTag tag) {
 		super.readAdditionalSaveData(tag);
+		this.angry = tag.getBoolean("Angry");
 		this.angerCounter = tag.getInteger("Anger");
 	}
 }

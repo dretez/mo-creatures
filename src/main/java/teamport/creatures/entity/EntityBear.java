@@ -4,7 +4,6 @@ import com.mojang.nbt.CompoundTag;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.EntityItem;
 import net.minecraft.core.entity.animal.EntityAnimal;
-import net.minecraft.core.entity.animal.EntityChicken;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.util.helper.DamageType;
 import net.minecraft.core.util.helper.MathHelper;
@@ -13,51 +12,44 @@ import net.minecraft.core.world.World;
 
 import java.util.List;
 
-public class EntityFox extends EntityAnimal {
-	boolean angry;
-	int angerCounter;
-
-	public EntityFox(World world) {
+public class EntityBear extends EntityAnimal {
+	private boolean attackedByPlayer;
+	public EntityBear(World world) {
 		super(world);
-		this.heartsHalvesLife = 10;
+		this.setSize(2.0F, 2.0F);
+		this.heartsHalvesLife = 30;
 	}
 
 	@Override
 	public String getEntityTexture() {
-		return "/assets/creatures/entity/fox/0.png";
+		return "/assets/creatures/entity/bear/0.png";
 	}
 
 	@Override
 	public String getDefaultEntityTexture() {
-		return "/assets/creatures/entity/fox/0.png";
-	}
-
-	@Override
-	public void tick() {
-		super.tick();
-        angry = angerCounter-- > 0;
+		return "/assets/creatures/entity/bear/0.png";
 	}
 
 	@Override
 	public boolean hurt(Entity attacker, int damage, DamageType type) {
-        if (attacker instanceof EntityPlayer) {
-			angerCounter = 400;
+		if (attacker instanceof EntityPlayer) {
+			this.attackedByPlayer = true;
 		}
-        return super.hurt(attacker, damage, type);
+
+		return attacker != this && super.hurt(attacker, damage, type);
 	}
 
 	@Override
 	protected Entity findPlayerToAttack() {
-        return angry ? world.getClosestPlayerToEntity(this, 16.0D) : null;
-    }
+		return attackedByPlayer ? world.getClosestPlayerToEntity(this, 16.0D) : null;
+	}
 
 	@Override
 	protected void attackEntity(Entity entity, float distance) {
 		if (!(entity instanceof EntityItem)) {
 			if (!(distance > 2.0F) || !(distance < 6.0F) || this.random.nextInt(10) != 0) {
-				if ((double)distance < 1.5 && entity.bb.maxY > this.bb.minY && entity.bb.minY < this.bb.maxY) {
+				if ((double)distance < 3 && entity.bb.maxY > this.bb.minY && entity.bb.minY < this.bb.maxY) {
 					this.attackTime = 20;
-
 					entity.hurt(this, 2, DamageType.COMBAT);
 				}
 			} else if (this.onGround) {
@@ -73,46 +65,50 @@ public class EntityFox extends EntityAnimal {
 
 	@Override
 	protected void updatePlayerActionState() {
-		super.updatePlayerActionState();
 		if (this.entityToAttack == null && !this.hasPath() && this.world.rand.nextInt(100) == 0) {
-			List<Entity> nearbyChickens = this.world
-				.getEntitiesWithinAABB(
-					EntityChicken.class, AABB.getBoundingBoxFromPool(this.x, this.y, this.z, this.x + 1.0, this.y + 1.0, this.z + 1.0).expand(16.0, 4.0, 16.0)
+			List<Entity> nearbyAnimals = this.world
+				.getEntitiesWithinAABBExcludingEntity(
+					this, AABB.getBoundingBoxFromPool(this.x, this.y, this.z, this.x + 1.0, this.y + 1.0, this.z + 1.0).expand(16.0, 4.0, 16.0)
 				);
-			if (!nearbyChickens.isEmpty())
-                this.setTarget(nearbyChickens.get(this.world.rand.nextInt(nearbyChickens.size())));
+
+			if (!nearbyAnimals.isEmpty()) {
+				Entity getNearbyAnimal = nearbyAnimals.get(this.world.rand.nextInt(nearbyAnimals.size()));
+
+				if (getNearbyAnimal instanceof EntityAnimal) {
+					this.setTarget(getNearbyAnimal);
+				}
+			}
+		} else {
+			super.updatePlayerActionState();
+		}
+
+		if (this.getTarget() instanceof EntityBear) {
+			this.setTarget(null);
 		}
 	}
 
-	@Override
-	public int getTalkInterval() {
-		return 360;
-	}
 
-	@Override
 	public String getLivingSound() {
-		return "creatures.foxcall";
+		return "creatures.beargrunt";
 	}
 
-	@Override
 	protected String getHurtSound() {
-		return "creatures.foxhurt";
+		return "creatures.bearhurt";
 	}
 
-	@Override
 	protected String getDeathSound() {
-		return "creatures.foxdying";
+		return "creatures.beardeath";
 	}
 
 	@Override
 	public void addAdditionalSaveData(CompoundTag tag) {
 		super.addAdditionalSaveData(tag);
-		tag.putInt("Anger", this.angerCounter);
+		tag.putBoolean("AttackedByPlayer", this.attackedByPlayer);
 	}
 
 	@Override
 	public void readAdditionalSaveData(CompoundTag tag) {
 		super.readAdditionalSaveData(tag);
-		this.angerCounter = tag.getInteger("Anger");
+		this.attackedByPlayer = tag.getBoolean("AttackedByPlayer");
 	}
 }

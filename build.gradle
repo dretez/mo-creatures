@@ -11,7 +11,6 @@ loom {
 	gluedMinecraftJar()
 	noIntermediateMappings()
 	customMinecraftManifest.set("https://github.com/Turnip-Labs/bta-manifest-repo/releases/download/v${project.bta_version}/${project.bta_version}.json")
-	accessWidenerPath = file("src/main/resources/creatures.accesswidener")
 }
 
 repositories {
@@ -74,15 +73,13 @@ repositories {
 		metadataSources { artifact() }
 	}
 	ivy {
-		url = "https://github.com/UselessBullets"
+		url = "https://github.com/UselessSolutions"
 		patternLayout {
 			artifact "[organisation]/releases/download/v[revision]/[module]-[revision].jar"
 			m2compatible = true
 		}
 		metadataSources { artifact() }
 	}
-
-
 }
 
 dependencies {

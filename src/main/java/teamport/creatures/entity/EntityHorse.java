@@ -18,7 +18,7 @@ public class EntityHorse extends EntityAnimal {
 	public boolean saddled;
 	public EntityHorse(World world) {
 		super(world);
-		this.health = 30;
+		this.heartsHalvesLife = 30;
 		this.skinVariant = random.nextInt(3);
 		this.setSize(0.8F, 2.0F);
 	}
@@ -79,7 +79,8 @@ public class EntityHorse extends EntityAnimal {
 				player.yd += 1F;
 				player.xd -= this.yRot * 0.0015F;
 				this.ejectRider();
-				this.world.playSoundAtEntity(this,
+				this.world.playSoundAtEntity(null,
+					this,
 					"creatures.horsemad",
 					this.getSoundVolume(),
 					(this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
@@ -87,6 +88,14 @@ public class EntityHorse extends EntityAnimal {
 
 			if (tameCounter++ >= 1000) {
 				this.tamed = true;
+
+				for (int i = 0; i < 8; i++) {
+					double randX = x + random.nextDouble();
+					double randY = y + random.nextDouble();
+					double randZ = z + random.nextDouble();
+
+					world.spawnParticle("heart", randX, randY + 0.22, randZ, 0.0, 0.2, 0.0);
+				}
 			}
 		}
 	}
@@ -94,18 +103,20 @@ public class EntityHorse extends EntityAnimal {
 	@Override
 	public void moveEntityWithHeading(float moveStrafing, float moveForward) {
 		if (this.saddled && this.passenger != null) {
-			PlayerInput passengerInput = ((EntityPlayerSP) passenger).input;
-			if (passengerInput.jump && !this.noPhysics && this.onGround) this.yd = 0.42;
-			this.yRot = passenger.yRot;
-			if (this.isInWater() || this.isInLava()) this.ejectRider();
+			if (passenger instanceof EntityPlayerSP) {
+				PlayerInput passengerInput = ((EntityPlayerSP) passenger).input;
+				if (passengerInput.jump && !this.noPhysics && this.onGround) this.yd = 0.42;
+				this.yRot = passenger.yRot;
+				if (this.isInWater() || this.isInLava()) this.ejectRider();
 
-			if (!this.onGround) {
-				super.moveRelative(passengerInput.moveStrafe, passengerInput.moveForward, this.moveSpeed / 16);
-			} else {
-				super.moveRelative(passengerInput.moveStrafe, passengerInput.moveForward, this.moveSpeed / 6);
+				if (!this.onGround) {
+					super.moveRelative(passengerInput.moveStrafe, passengerInput.moveForward, this.moveSpeed / 16);
+				} else {
+					super.moveRelative(passengerInput.moveStrafe, passengerInput.moveForward, this.moveSpeed / 6);
+				}
+
+				super.moveEntityWithHeading(passengerInput.moveStrafe, passengerInput.moveForward);
 			}
-
-			super.moveEntityWithHeading(passengerInput.moveStrafe, passengerInput.moveForward);
 		} else {
 			super.moveEntityWithHeading(moveStrafing, moveForward);
 		}

@@ -5,14 +5,16 @@ import turniplabs.halplibe.helper.EntityHelper;
 
 public class MCEntities {
 	public static void initEntityCore() {
-		EntityHelper.Core.createEntity(EntityFox.class, 255, "fox");
-		EntityHelper.Core.createEntity(EntityFoxArctic.class, 256, "arcticfox");
-		EntityHelper.Core.createEntity(EntityBoar.class, 257, "boar");
-		EntityHelper.Core.createEntity(EntityBunny.class, 258, "bunny");
-		EntityHelper.Core.createEntity(EntityBird.class, 259, "bird");
-		EntityHelper.Core.createEntity(EntityHorse.class, 260, "horse");
-		EntityHelper.Core.createEntity(EntityHorseUnicorn.class, 261, "unicorn");
-		EntityHelper.Core.createEntity(EntityHorsePegasus.class, 262, "pegasus");
+		EntityHelper.Core.createEntity(EntityFox.class, 100, "Fox");
+		EntityHelper.Core.createEntity(EntityFoxArctic.class, 101, "ArcticFox");
+		EntityHelper.Core.createEntity(EntityBoar.class, 102, "Boar");
+		EntityHelper.Core.createEntity(EntityBunny.class, 103, "Bunny");
+		EntityHelper.Core.createEntity(EntityBird.class, 104, "Bird");
+		EntityHelper.Core.createEntity(EntityHorse.class, 105, "Horse");
+		EntityHelper.Core.createEntity(EntityHorseUnicorn.class, 106, "Unicorn");
+		EntityHelper.Core.createEntity(EntityHorsePegasus.class, 107, "Pegasus");
+		EntityHelper.Core.createEntity(EntityBear.class, 108, "Bear");
+		EntityHelper.Core.createEntity(EntityBearPolar.class, 109, "PolarBear");
 	}
 
 	public static void initEntityClient() {
@@ -24,5 +26,7 @@ public class MCEntities {
 		EntityHelper.Client.assignEntityRenderer(EntityHorse.class, new HorseRenderer());
 		EntityHelper.Client.assignEntityRenderer(EntityHorseUnicorn.class, new HorseUnicornRenderer());
 		EntityHelper.Client.assignEntityRenderer(EntityHorsePegasus.class, new HorsePegasusRenderer());
+		EntityHelper.Client.assignEntityRenderer(EntityBear.class, new BearRenderer());
+		EntityHelper.Client.assignEntityRenderer(EntityBearPolar.class, new BearRenderer());
 	}
 }

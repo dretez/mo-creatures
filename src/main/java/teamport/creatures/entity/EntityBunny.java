@@ -14,7 +14,7 @@ public class EntityBunny extends EntityAnimal {
 
 	public EntityBunny(World world) {
 		super(world);
-		this.health = 5;
+		this.heartsHalvesLife = 5;
 		this.jumpDelay = 0;
 		this.setSize(0.4F, 0.4F);
 		this.skinVariant = random.nextInt(5);
@@ -34,14 +34,15 @@ public class EntityBunny extends EntityAnimal {
 	protected void updatePlayerActionState() {
 		++this.entityAge;
 		this.tryToDespawn();
-		if (this.isInWater() || this.isInLava()) this.isJumping = true;
+		if (this.isInWater() || this.isInLava()) this.yd += 0.15F;
 
 		if (this.onGround && this.jumpDelay-- <= 0) {
 
 			this.jumpDelay = this.random.nextInt(20) + 10;
 			this.isJumping = true;
 			jumpState.start(this.tickCount);
-			world.playSoundAtEntity(this,
+			world.playSoundAtEntity(null,
+				this,
 				"creatures.rabbitland",
 				1.0F,
 				(this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
@@ -67,13 +68,15 @@ public class EntityBunny extends EntityAnimal {
 		ItemStack item = entityplayer.inventory.getCurrentItem();
 		if (item == null && entityplayer.passenger == null) {
 			this.startRiding(entityplayer);
-			world.playSoundAtEntity(this,
+			world.playSoundAtEntity(null,
+				this,
 				"creatures.rabbitland",
 				1.0F,
 				(this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
 		} else if (entityplayer.passenger != null) {
 			entityplayer.ejectRider();
-			world.playSoundAtEntity(entityplayer,
+			world.playSoundAtEntity(null,
+				this,
 				"creatures.rabbitland",
 				1.0F,
 				(this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
