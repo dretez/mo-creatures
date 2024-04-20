@@ -52,6 +52,7 @@ public class MCSounds {
 		SoundHelper.Client.addSound(MOD_ID, "horsehurt2.ogg");
 		SoundHelper.Client.addSound(MOD_ID, "horsedying.ogg");
 		SoundHelper.Client.addSound(MOD_ID, "horsemad.ogg");
+		SoundHelper.Client.addSound(MOD_ID, "eating.ogg");
 
 		// Bears
 		SoundHelper.Client.addSound(MOD_ID, "beardeath.ogg");
@@ -62,5 +63,19 @@ public class MCSounds {
 		SoundHelper.Client.addSound(MOD_ID, "beargrunt5.ogg");
 		SoundHelper.Client.addSound(MOD_ID, "bearhurt1.ogg");
 		SoundHelper.Client.addSound(MOD_ID, "bearhurt2.ogg");
+
+		// Deet
+		// B stands for baby, I guess?
+		SoundHelper.Client.addSound(MOD_ID, "deerbgrunt.ogg");
+		SoundHelper.Client.addSound(MOD_ID, "deerfgrunt.ogg");
+		SoundHelper.Client.addSound(MOD_ID, "deerhurt.ogg");
+		SoundHelper.Client.addSound(MOD_ID, "deerdying.ogg");
+
+		// Duck
+		SoundHelper.Client.addSound(MOD_ID, "duck1.ogg");
+		SoundHelper.Client.addSound(MOD_ID, "duck2.ogg");
+		SoundHelper.Client.addSound(MOD_ID, "duck3.ogg");
+		SoundHelper.Client.addSound(MOD_ID, "duckhurt1.ogg");
+		SoundHelper.Client.addSound(MOD_ID, "duckhurt2.ogg");
 	}
 }

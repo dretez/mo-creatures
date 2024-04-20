@@ -19,6 +19,9 @@
 
   "environment": "*",
   "entrypoints": {
+		"main": [
+			"teamport.creatures.MoCreatures"
+		],
 		"beforeGameStart": [
 			"teamport.creatures.MoCreatures"
 		],
@@ -29,9 +32,6 @@
 			"teamport.creatures.MoCreatures"
 		],
 		"afterClientStart": [
-			"teamport.creatures.MoCreatures"
-		],
-		"recipesReady": [
 			"teamport.creatures.MoCreatures"
 		]
 	},

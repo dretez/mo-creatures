@@ -24,14 +24,17 @@ public class EntityHorseUnicorn extends EntityHorse {
 			if (item.itemID == Item.foodApple.id) {
 				this.chanceForTame += random.nextInt(3) + 1;
 				item.consumeItem(entityplayer);
+				world.playSoundAtEntity(null, this, "creatures.eating", 1.0f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
 			}
 			if (item.itemID == Item.dustSugar.id) {
 				this.chanceForTame += random.nextInt(6) + 1;
 				item.consumeItem(entityplayer);
+				world.playSoundAtEntity(null, this, "creatures.eating", 1.0f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
 			}
 			if (item.itemID == Item.foodAppleGold.id) {
 				this.chanceForTame += random.nextInt(100) + 1;
 				item.consumeItem(entityplayer);
+				world.playSoundAtEntity(null, this, "creatures.eating", 1.0f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
 			}
 
 			if (this.tamed && item.itemID == Item.saddle.id) {
