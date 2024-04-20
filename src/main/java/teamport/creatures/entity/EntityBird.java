@@ -4,8 +4,11 @@ import com.mojang.nbt.CompoundTag;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.EntityItem;
+import net.minecraft.core.entity.EntityLiving;
 import net.minecraft.core.entity.animal.EntityAnimal;
-import net.minecraft.core.item.Item;
+import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.core.item.ItemSeeds;
+import net.minecraft.core.util.helper.DamageType;
 import net.minecraft.core.util.helper.MathHelper;
 import net.minecraft.core.util.phys.AABB;
 import net.minecraft.core.world.World;
@@ -15,19 +18,20 @@ import java.util.List;
 
 public class EntityBird extends EntityAnimal {
 	public AnimationState flyState = new AnimationState();
-	int courseChangeCoolDown = 0;
-	int courseCoolDown = 200;
-	int skinVariant;
-	double waypointX;
-	double waypointY;
-	double waypointZ;
-	boolean fed;
+	private int courseChangeCoolDown = 0;
+	private int courseCoolDown = 200;
+	private int skinVariant;
+	private int afraidTick = 0;
+	private boolean isFed = false;
+	private boolean isAfraid = true;
 
 	public EntityBird(World world) {
 		super(world);
-		this.heartsHalvesLife = 5;
-		this.setSize(0.25F, 0.25F);
-		this.skinVariant = random.nextInt(6);
+		setSize(0.25F, 0.25F);
+
+		heartsHalvesLife = 5;
+		skinVariant = random.nextInt(6);
+		speed = 0.05f;
 	}
 
 	@Override
@@ -69,143 +73,112 @@ public class EntityBird extends EntityAnimal {
 		return null;
 	}
 
-	// Copied code from EntityFlying because I hated extending it.
 	@Override
 	public void moveEntityWithHeading(float moveStrafing, float moveForward) {
-		if (this.isInWater()) {
-			this.moveRelative(moveStrafing, moveForward, 0.02F);
-			this.move(this.xd, this.yd, this.zd);
-			this.xd *= 0.8;
-			this.yd *= 0.8;
-			this.zd *= 0.8;
-		} else if (this.isInLava()) {
-			this.moveRelative(moveStrafing, moveForward, 0.02F);
-			this.move(this.xd, this.yd, this.zd);
-			this.xd *= 0.5;
-			this.yd *= 0.5;
-			this.zd *= 0.5;
-		} else {
-			float moveScale = 0.91F;
-			if (this.onGround) {
-				moveScale = 0.5460001F;
-				int i = this.world.getBlockId(MathHelper.floor_double(this.x), MathHelper.floor_double(this.bb.minY) - 1, MathHelper.floor_double(this.z));
-				if (i > 0) {
-					moveScale = Block.blocksList[i].movementScale * 1.85F;
-				}
+		if ((courseCoolDown-- <= 0 && courseCoolDown > -400)) {
+			xd *= 0.455;
+			yd *= 0.455;
+			zd *= 0.455;
+
+			yd += y < (double) world.getHeightBlocks() / 2 ? 0.025f : -0.025f;
+
+			if (random.nextFloat() < 0.05F) randomYawVelocity = (random.nextFloat() - 0.5F) * 20.0F;
+			yRot += randomYawVelocity;
+			xRot = defaultPitch;
+
+			moveForward = 0.3f;
+			moveStrafing = moveForward;
+			moveRelative(moveStrafing, moveForward, 0.2f);
+
+		} else if (courseCoolDown > 0) {
+			xd = 0.0f;
+			zd = 0.0f;
+
+			if (!this.onGround) {
+				yd = -0.05f;
+				moveForward = 0.1f;
 			}
 
-			float f3 = 0.1627714F / (moveScale * moveScale * moveScale);
-			this.moveRelative(moveStrafing, moveForward, this.onGround ? 0.1F * f3 : 0.02F);
-			moveScale = 0.91F;
-			if (this.onGround) {
-				moveScale = 0.5460001F;
-				int blockID = this.world.getBlockId(MathHelper.floor_double(this.x), MathHelper.floor_double(this.bb.minY) - 1, MathHelper.floor_double(this.z));
-				if (blockID > 0) {
-					moveScale = Block.blocksList[blockID].movementScale * 0.91F;
-				}
-			}
-
-			this.move(this.xd, this.yd, this.zd);
-			this.xd *= moveScale;
-			this.yd *= moveScale;
-			this.zd *= moveScale;
+			super.moveEntityWithHeading(moveStrafing, moveForward);
 		}
 
-		this.prevLimbYaw = this.limbYaw;
-		double x2 = this.x - this.xo;
-		double z2 = this.z - this.zo;
-		float f4 = MathHelper.sqrt_double(x2 * x2 + z2 * z2) * 2.0F;
-		if (f4 > 1.0F) {
-			f4 = 1.0F;
-		}
+		if (courseCoolDown <= -400) courseCoolDown = random.nextInt(400) + 600;
 
-		this.limbYaw += (f4 - this.limbYaw) * 0.4F;
-		this.limbSwing += this.limbYaw;
+		if (isInWater() || isInLava()) jump();
+
+		move(xd, yd, zd);
 	}
 
-	// Copied from the Ghast code.
-	private boolean isCourseTraversable(double x, double y, double z, double multiplier) {
-		double wX = (this.waypointX - x) / multiplier;
-		double wY = (this.waypointY - y) / multiplier;
-		double wZ = (this.waypointZ - z) / multiplier;
-		AABB aabb = this.bb.copy();
-
-		for (int i = 1; (double) i < multiplier; ++i) {
-			aabb.offset(wX, wY, wZ);
-			if (!this.world.getCubes(this, aabb).isEmpty()) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	// TODO - Make them afraid of entities unless fed.
 	@Override
 	protected void updatePlayerActionState() {
 		super.updatePlayerActionState();
-		this.moveEntityWithHeading(moveStrafing, moveForward);
-		this.flyState.animateWhen(courseCoolDown >= 0, tickCount);
+		moveEntityWithHeading(moveStrafing, moveForward);
+		flyState.animateWhen(courseCoolDown <= 0, tickCount);
 
 		// Seed check
-		List<Entity> nearbyItems = this.world
-			.getEntitiesWithinAABB(
-				EntityItem.class, AABB.getBoundingBoxFromPool(this.x, this.y, this.z, this.x + 1.0, this.y + 1.0, this.z + 1.0).expand(16.0, 16.0, 16.0)
+		List<Entity> nearbyItems = world
+			.getEntitiesWithinAABB(EntityItem.class, AABB.getBoundingBoxFromPool(x, y, z, x + 1.0, y + 1.0, z + 1.0)
+					.expand(16.0, 16.0, 16.0)
 			);
-		if (!nearbyItems.isEmpty()) {
+		if (!nearbyItems.isEmpty() && !isAfraid) {
 			Entity entityItem = null;
 			for (Entity nearbyItem : nearbyItems) {
 				entityItem = nearbyItem;
 			}
 			if (entityItem != null) {
-				if (((EntityItem) entityItem).item.itemID == Item.seedsWheat.id ||
-					((EntityItem) entityItem).item.itemID == Item.seedsPumpkin.id) {
-					this.setTarget(entityItem);
+				if (((EntityItem) entityItem).item.getItem() instanceof ItemSeeds) {
+					courseCoolDown = random.nextInt(200) + 300;
+					setTarget(entityItem);
 
 					// If the item is seeds and the entities are colliding, feed the birb.
-					if (this.bb.intersectsWith(entityItem.bb)) {
+					if (bb.intersectsWith(entityItem.bb)) {
 						entityItem.remove();
-						this.fed = true;
+						isFed = true;
 					}
 				}
 			}
 		}
 
-		// This is also copied from the Ghast code.
-		double wX = this.waypointX - this.x;
-		double wY = this.waypointY - this.y;
-		double wZ = this.waypointZ - this.z;
-		double wD = MathHelper.sqrt_double(wX * wX + wY * wY + wZ * wZ);
-		if (wD < 1.0 || wD > 60.0) {
-			this.waypointX = this.x + (double)((this.random.nextFloat() * 2.0F - 1.0F) * 2.0F);
-			this.waypointY = this.y + (double)((this.random.nextFloat() * 2.0F - 1.0F) * 2.0F);
-			this.waypointZ = this.z + (double)((this.random.nextFloat() * 2.0F - 1.0F) * 2.0F);
+		// Nearby entity check
+		List<Entity> nearbyLiving = world.
+			getEntitiesWithinAABB(EntityLiving.class, AABB.getBoundingBoxFromPool(x, y, z, x + 1.0, y + 1.0, z + 1.0)
+			.expand(12.0, 16.0, 12.0));
+
+		if (!nearbyLiving.isEmpty() && !(nearbyLiving instanceof EntityBird) && !isFed) {
+			speed = 0.1f;
+			roamRandomPath();
 		}
 
-		if (this.courseCoolDown-- >= 0) {
-			if (this.courseChangeCoolDown-- <= 0) {
-				this.courseChangeCoolDown += this.random.nextInt(5) + 2;
-				this.renderYawOffset = this.yRot = -((float)Math.atan2(this.xd, this.zd)) * 180.0F / 3.141593F;
+		// Afraid check
+		if (afraidTick > 0) {
+			afraidTick--;
+			isFed = false;
+			isAfraid = true;
+			courseCoolDown = 0;
 
-				if (this.isCourseTraversable(this.waypointX, this.waypointY, this.waypointZ, wD)) {
-					this.xd += wX / wD * 0.1;
-					this.yd += wY / wD * 0.05;
-					this.zd += wZ / wD * 0.1;
-				} else {
-					this.waypointX = this.x;
-					this.waypointY = this.y;
-					this.waypointZ = this.z;
-				}
-			}
+			speed = 0.1f;
+			roamRandomPath();
 		} else {
-			flyState.stop();
-			this.yd -= 0.05F;
-			if (courseCoolDown <= -200) courseCoolDown = random.nextInt(200) + 200;
+			isAfraid = false;
+			speed = 0.05f;
 		}
 	}
 
 	@Override
+	public boolean hurt(Entity attacker, int damage, DamageType type) {
+		afraidTick = 1200;
+		return super.hurt(attacker, damage, type);
+	}
+
+	@Override
 	protected void causeFallDamage(float f) {
+	}
+
+	@Override
+	protected void jump() {
+		if (courseCoolDown <= 0 || isInWater()) {
+			super.jump();
+		}
 	}
 
 	@Override
@@ -214,7 +187,8 @@ public class EntityBird extends EntityAnimal {
 		tag.putInt("SkinVariant", skinVariant);
 		tag.putInt("CourseCoolDown", courseCoolDown);
 		tag.putInt("CourseChangeCoolDown", courseChangeCoolDown);
-		tag.putBoolean("Fed", fed);
+		tag.putInt("AfraidTick", afraidTick);
+		tag.putBoolean("Fed", isFed);
 	}
 
 	@Override
@@ -223,6 +197,7 @@ public class EntityBird extends EntityAnimal {
 		skinVariant = tag.getInteger("SkinVariant");
 		courseCoolDown = tag.getInteger("CourseCoolDown");
 		courseChangeCoolDown = tag.getInteger("CourseChangeCoolDown");
-		fed = tag.getBoolean("Fed");
+		afraidTick = tag.getInteger("AfraidTick");
+		isFed = tag.getBoolean("Fed");
 	}
 }

@@ -41,14 +41,18 @@ public class EntityHorse extends EntityAnimal {
 			if (item.itemID == Item.wheat.id) {
 				this.chanceForTame += 1;
 				item.consumeItem(entityplayer);
+				world.playSoundAtEntity(null, this, "creatures.eating", 1.0f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
 			}
 			if (item.itemID == Item.foodApple.id) {
 				this.chanceForTame += random.nextInt(4) + 1;
 				item.consumeItem(entityplayer);
+				world.playSoundAtEntity(null, this, "creatures.eating", 1.0f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+
 			}
 			if (item.itemID == Item.dustSugar.id) {
 				this.chanceForTame += random.nextInt(8) + 1;
 				item.consumeItem(entityplayer);
+				world.playSoundAtEntity(null, this, "creatures.eating", 1.0f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
 			}
 
 			if (this.tamed && item.itemID == Item.saddle.id) {
@@ -76,7 +80,7 @@ public class EntityHorse extends EntityAnimal {
 
 			if (this.annoyance >= 300) {
 				this.annoyance = 0;
-				player.yd += 1F;
+				player.yd += 0.75F;
 				player.xd -= this.yRot * 0.0015F;
 				this.ejectRider();
 				this.world.playSoundAtEntity(null,

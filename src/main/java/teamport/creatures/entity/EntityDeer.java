@@ -15,7 +15,7 @@ public class EntityDeer extends EntityAnimal {
 
 	public EntityDeer(World world) {
 		super(world);
-		heartsHalvesLife = 20;
+		heartsHalvesLife = 10;
 		setSize(0.3f, 2.0f);
 
 		if (random.nextInt(2) == 0) {

@@ -9,6 +9,6 @@ import static teamport.creatures.MoCreatures.MOD_ID;
 public class DeerRenderer extends LivingRenderer<EntityDeer> {
 
 	public DeerRenderer() {
-		super(ModelHelper.getOrCreateEntityModel(MOD_ID, "entity/deer.json", DeerModel.class), 0.4f);
+		super(ModelHelper.getOrCreateEntityModel(MOD_ID, "entity/deer.json", DeerModel.class), 0.75f);
 	}
 }

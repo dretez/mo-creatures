@@ -86,6 +86,7 @@ public class EntityBunny extends EntityAnimal {
 			this.jump();
 			this.jumpState.start(tickCount);
 		}
+
 		return super.interact(entityplayer);
 	}
 
