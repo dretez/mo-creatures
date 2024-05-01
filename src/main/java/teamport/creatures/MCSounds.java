@@ -77,5 +77,21 @@ public class MCSounds {
 		SoundHelper.Client.addSound(MOD_ID, "duck3.ogg");
 		SoundHelper.Client.addSound(MOD_ID, "duckhurt1.ogg");
 		SoundHelper.Client.addSound(MOD_ID, "duckhurt2.ogg");
+
+		// Kitty
+		SoundHelper.Client.addSound(MOD_ID, "kittydying1.ogg");
+		SoundHelper.Client.addSound(MOD_ID, "kittydying2.ogg");
+		SoundHelper.Client.addSound(MOD_ID, "kittyeating1.ogg");
+		SoundHelper.Client.addSound(MOD_ID, "kittyeating2.ogg");
+		SoundHelper.Client.addSound(MOD_ID, "kittygrunt1.ogg");
+		SoundHelper.Client.addSound(MOD_ID, "kittygrunt2.ogg");
+		SoundHelper.Client.addSound(MOD_ID, "kittyhurt1.ogg");
+		SoundHelper.Client.addSound(MOD_ID, "kittyhurt2.ogg");
+		SoundHelper.Client.addSound(MOD_ID, "kittyhurt3.ogg");
+		SoundHelper.Client.addSound(MOD_ID, "kittypurr1.ogg");
+		SoundHelper.Client.addSound(MOD_ID, "kittypurr2.ogg");
+		SoundHelper.Client.addSound(MOD_ID, "kittyupset1.ogg");
+		SoundHelper.Client.addSound(MOD_ID, "kittyupset2.ogg");
+		SoundHelper.Client.addSound(MOD_ID, "kittyupset3.ogg");
 	}
 }

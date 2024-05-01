@@ -16,11 +16,12 @@ public class EntityHorse extends EntityAnimal {
 	int tameCounter = 0;
 	private int skinVariant;
 	public boolean saddled;
+
 	public EntityHorse(World world) {
 		super(world);
-		this.heartsHalvesLife = 30;
-		this.skinVariant = random.nextInt(3);
-		this.setSize(0.8F, 2.0F);
+		heartsHalvesLife = 30;
+		skinVariant = random.nextInt(3);
+		setSize(0.8F, 2.0F);
 	}
 
 	@Override
@@ -39,24 +40,24 @@ public class EntityHorse extends EntityAnimal {
 		ItemStack item = entityplayer.inventory.getCurrentItem();
 		if (item != null) {
 			if (item.itemID == Item.wheat.id) {
-				this.chanceForTame += 1;
+				chanceForTame += 1;
 				item.consumeItem(entityplayer);
-				world.playSoundAtEntity(null, this, "creatures.eating", 1.0f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+				world.playSoundAtEntity(null, this, "creatures.eating", 1.0f, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
 			}
 			if (item.itemID == Item.foodApple.id) {
-				this.chanceForTame += random.nextInt(4) + 1;
+				chanceForTame += random.nextInt(4) + 1;
 				item.consumeItem(entityplayer);
-				world.playSoundAtEntity(null, this, "creatures.eating", 1.0f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+				world.playSoundAtEntity(null, this, "creatures.eating", 1.0f, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
 
 			}
 			if (item.itemID == Item.dustSugar.id) {
-				this.chanceForTame += random.nextInt(8) + 1;
+				chanceForTame += random.nextInt(8) + 1;
 				item.consumeItem(entityplayer);
-				world.playSoundAtEntity(null, this, "creatures.eating", 1.0f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+				world.playSoundAtEntity(null, this, "creatures.eating", 1.0f, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
 			}
 
-			if (this.tamed && item.itemID == Item.saddle.id) {
-				this.saddled = true;
+			if (tamed && item.itemID == Item.saddle.id) {
+				saddled = true;
 				item.consumeItem(entityplayer);
 			}
 		} else {
@@ -68,30 +69,30 @@ public class EntityHorse extends EntityAnimal {
 	@Override
 	protected void updatePlayerActionState() {
 		super.updatePlayerActionState();
-		if (this.passenger != null && !this.tamed) {
-			EntityPlayer player = (EntityPlayer) this.passenger;
+		if (passenger != null && !tamed) {
+			EntityPlayer player = (EntityPlayer) passenger;
 
-			if (this.random.nextInt(6) == 0) {
-				this.annoyance += 20;
+			if (random.nextInt(6) == 0) {
+				annoyance += 20;
 			}
-			if (this.random.nextInt(10) == 0) {
-				this.tameCounter += 20 * chanceForTame;
+			if (random.nextInt(10) == 0) {
+				tameCounter += 20 * chanceForTame;
 			}
 
-			if (this.annoyance >= 300) {
-				this.annoyance = 0;
+			if (annoyance >= 300) {
+				annoyance = 0;
 				player.yd += 0.75F;
-				player.xd -= this.yRot * 0.0015F;
-				this.ejectRider();
-				this.world.playSoundAtEntity(null,
+				player.xd -= yRot * 0.0015F;
+				ejectRider();
+				world.playSoundAtEntity(null,
 					this,
 					"creatures.horsemad",
-					this.getSoundVolume(),
-					(this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+					getSoundVolume(),
+					(random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
 			}
 
 			if (tameCounter++ >= 1000) {
-				this.tamed = true;
+				tamed = true;
 
 				for (int i = 0; i < 8; i++) {
 					double randX = x + random.nextDouble();
@@ -106,17 +107,17 @@ public class EntityHorse extends EntityAnimal {
 
 	@Override
 	public void moveEntityWithHeading(float moveStrafing, float moveForward) {
-		if (this.saddled && this.passenger != null) {
+		if (saddled && passenger != null) {
 			if (passenger instanceof EntityPlayerSP) {
 				PlayerInput passengerInput = ((EntityPlayerSP) passenger).input;
-				if (passengerInput.jump && !this.noPhysics && this.onGround) this.yd = 0.42;
-				this.yRot = passenger.yRot;
-				if (this.isInWater() || this.isInLava()) this.ejectRider();
+				if (passengerInput.jump && !noPhysics && onGround) yd = 0.42;
+				yRot = passenger.yRot;
+				if (isInWater() || isInLava()) ejectRider();
 
-				if (!this.onGround) {
-					super.moveRelative(passengerInput.moveStrafe, passengerInput.moveForward, this.moveSpeed / 16);
+				if (!onGround) {
+					super.moveRelative(passengerInput.moveStrafe, passengerInput.moveForward, moveSpeed / 16);
 				} else {
-					super.moveRelative(passengerInput.moveStrafe, passengerInput.moveForward, this.moveSpeed / 6);
+					super.moveRelative(passengerInput.moveStrafe, passengerInput.moveForward, moveSpeed / 6);
 				}
 
 				super.moveEntityWithHeading(passengerInput.moveStrafe, passengerInput.moveForward);
@@ -138,7 +139,7 @@ public class EntityHorse extends EntityAnimal {
 
 	@Override
 	protected boolean canDespawn() {
-		return !this.tamed && super.canDespawn();
+		return !tamed && super.canDespawn();
 	}
 
 	@Override
@@ -159,33 +160,33 @@ public class EntityHorse extends EntityAnimal {
 	@Override
 	protected void dropFewItems() {
 		super.dropFewItems();
-		if (saddled) this.spawnAtLocation(Item.saddle.id, 1);
+		if (saddled) spawnAtLocation(Item.saddle.id, 1);
 	}
 
 	@Override
 	public double getRideHeight() {
-		return (double)this.bbHeight * 0.7;
+		return (double)bbHeight * 0.7;
 	}
 
 	@Override
 	public void addAdditionalSaveData(CompoundTag tag) {
 		super.addAdditionalSaveData(tag);
-		tag.putBoolean("Tamed", this.tamed);
-		tag.putBoolean("Saddled", this.saddled);
-		tag.putInt("ChanceForTame", this.chanceForTame);
-		tag.putInt("Annoyance", this.annoyance);
-		tag.putInt("TameCounter", this.tameCounter);
-		tag.putInt("SkinVariant", this.skinVariant);
+		tag.putBoolean("Tamed", tamed);
+		tag.putBoolean("Saddled", saddled);
+		tag.putInt("ChanceForTame", chanceForTame);
+		tag.putInt("Annoyance", annoyance);
+		tag.putInt("TameCounter", tameCounter);
+		tag.putInt("SkinVariant", skinVariant);
 	}
 
 	@Override
 	public void readAdditionalSaveData(CompoundTag tag) {
 		super.readAdditionalSaveData(tag);
-		this.tamed = tag.getBoolean("Tamed");
-		this.saddled = tag.getBoolean("Saddled");
-		this.chanceForTame = tag.getInteger("ChanceForTame");
-		this.annoyance = tag.getInteger("Annoyance");
-		this.tameCounter = tag.getInteger("TameCounter");
-		this.skinVariant = tag.getInteger("SkinVariant");
+		tamed = tag.getBoolean("Tamed");
+		saddled = tag.getBoolean("Saddled");
+		chanceForTame = tag.getInteger("ChanceForTame");
+		annoyance = tag.getInteger("Annoyance");
+		tameCounter = tag.getInteger("TameCounter");
+		skinVariant = tag.getInteger("SkinVariant");
 	}
 }

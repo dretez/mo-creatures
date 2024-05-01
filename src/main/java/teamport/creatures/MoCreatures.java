@@ -3,7 +3,9 @@ package teamport.creatures;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import teamport.creatures.block.MCBlocks;
 import teamport.creatures.entity.MCEntities;
+import teamport.creatures.item.MCItems;
 import turniplabs.halplibe.util.ClientStartEntrypoint;
 import turniplabs.halplibe.util.GameStartEntrypoint;
 import turniplabs.halplibe.util.RecipeEntrypoint;
@@ -13,7 +15,7 @@ public class MoCreatures implements ModInitializer, GameStartEntrypoint, ClientS
     public static final String MOD_ID = "creatures";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-	// IDEAS LIST //
+	// IDEAS LIST
 	// Baby animals
 	// Handcannon bunnies
 	// TNT bunnies
@@ -25,6 +27,9 @@ public class MoCreatures implements ModInitializer, GameStartEntrypoint, ClientS
 
 	@Override
 	public void beforeGameStart() {
+		MCBlocks.initializeBlocks();
+		MCBlocks.initializeCoreTiles();
+		MCItems.initializeItems();
 		MCEntities.initEntityCore();
 	}
 
@@ -35,6 +40,7 @@ public class MoCreatures implements ModInitializer, GameStartEntrypoint, ClientS
 
 	@Override
 	public void beforeClientStart() {
+		MCBlocks.initializeClientTiles();
 		MCSounds.initializeSounds();
 		MCEntities.initEntityClient();
 	}

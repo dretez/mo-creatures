@@ -19,7 +19,7 @@ public class EntityFox extends EntityAnimal {
 
 	public EntityFox(World world) {
 		super(world);
-		this.heartsHalvesLife = 10;
+		heartsHalvesLife = 10;
 	}
 
 	@Override
@@ -54,19 +54,19 @@ public class EntityFox extends EntityAnimal {
 	@Override
 	protected void attackEntity(Entity entity, float distance) {
 		if (!(entity instanceof EntityItem)) {
-			if (!(distance > 2.0F) || !(distance < 6.0F) || this.random.nextInt(10) != 0) {
-				if ((double)distance < 1.5 && entity.bb.maxY > this.bb.minY && entity.bb.minY < this.bb.maxY) {
-					this.attackTime = 20;
+			if (!(distance > 2.0F) || !(distance < 6.0F) || random.nextInt(10) != 0) {
+				if ((double)distance < 1.5 && entity.bb.maxY > bb.minY && entity.bb.minY < bb.maxY) {
+					attackTime = 20;
 
 					entity.hurt(this, 2, DamageType.COMBAT);
 				}
-			} else if (this.onGround) {
-				double d = entity.x - this.x;
-				double d1 = entity.z - this.z;
+			} else if (onGround) {
+				double d = entity.x - x;
+				double d1 = entity.z - z;
 				float f1 = MathHelper.sqrt_double(d * d + d1 * d1);
-				this.xd = d / (double)f1 * 0.5 * 0.8F + this.xd * 0.2F;
-				this.zd = d1 / (double)f1 * 0.5 * 0.8F + this.zd * 0.2F;
-				this.yd = 0.4F;
+				xd = d / (double)f1 * 0.5 * 0.8F + xd * 0.2F;
+				zd = d1 / (double)f1 * 0.5 * 0.8F + zd * 0.2F;
+				yd = 0.4F;
 			}
 		}
 	}
@@ -74,13 +74,13 @@ public class EntityFox extends EntityAnimal {
 	@Override
 	protected void updatePlayerActionState() {
 		super.updatePlayerActionState();
-		if (this.entityToAttack == null && !this.hasPath() && this.world.rand.nextInt(100) == 0) {
-			List<Entity> nearbyChickens = this.world
+		if (entityToAttack == null && !hasPath() && world.rand.nextInt(100) == 0) {
+			List<Entity> nearbyChickens = world
 				.getEntitiesWithinAABB(
-					EntityChicken.class, AABB.getBoundingBoxFromPool(this.x, this.y, this.z, this.x + 1.0, this.y + 1.0, this.z + 1.0).expand(16.0, 4.0, 16.0)
+					EntityChicken.class, AABB.getBoundingBoxFromPool(x, y, z, x + 1.0, y + 1.0, z + 1.0).expand(16.0, 4.0, 16.0)
 				);
 			if (!nearbyChickens.isEmpty())
-                this.setTarget(nearbyChickens.get(this.world.rand.nextInt(nearbyChickens.size())));
+                setTarget(nearbyChickens.get(world.rand.nextInt(nearbyChickens.size())));
 		}
 	}
 
@@ -107,12 +107,12 @@ public class EntityFox extends EntityAnimal {
 	@Override
 	public void addAdditionalSaveData(CompoundTag tag) {
 		super.addAdditionalSaveData(tag);
-		tag.putInt("Anger", this.angerCounter);
+		tag.putInt("Anger", angerCounter);
 	}
 
 	@Override
 	public void readAdditionalSaveData(CompoundTag tag) {
 		super.readAdditionalSaveData(tag);
-		this.angerCounter = tag.getInteger("Anger");
+		angerCounter = tag.getInteger("Anger");
 	}
 }
