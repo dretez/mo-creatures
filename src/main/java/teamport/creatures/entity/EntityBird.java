@@ -165,6 +165,25 @@ public class EntityBird extends EntityAnimal {
 	}
 
 	@Override
+	protected void attackEntity(Entity entity, float distance) {
+		if (!(entity instanceof EntityItem)) {
+			if (!(distance > 2.0F) || !(distance < 6.0F) || this.random.nextInt(10) != 0) {
+				if ((double)distance < 3 && entity.bb.maxY > this.bb.minY && entity.bb.minY < this.bb.maxY) {
+					this.attackTime = 20;
+					entity.hurt(this, 2, DamageType.COMBAT);
+				}
+			} else if (this.onGround) {
+				double d = entity.x - this.x;
+				double d1 = entity.z - this.z;
+				float f1 = MathHelper.sqrt_double(d * d + d1 * d1);
+				this.xd = d / (double)f1 * 0.5 * 0.8F + this.xd * 0.2F;
+				this.zd = d1 / (double)f1 * 0.5 * 0.8F + this.zd * 0.2F;
+				this.yd = 0.4F;
+			}
+		}
+	}
+
+	@Override
 	public boolean hurt(Entity attacker, int damage, DamageType type) {
 		afraidTick = 1200;
 		return super.hurt(attacker, damage, type);

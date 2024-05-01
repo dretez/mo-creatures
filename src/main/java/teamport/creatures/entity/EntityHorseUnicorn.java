@@ -8,7 +8,7 @@ import net.minecraft.core.world.World;
 public class EntityHorseUnicorn extends EntityHorse {
 	public EntityHorseUnicorn(World world) {
 		super(world);
-		this.moveSpeed = 1.4F;
+		moveSpeed = 1.4F;
 	}
 
 	@Override
@@ -22,23 +22,23 @@ public class EntityHorseUnicorn extends EntityHorse {
 		ItemStack item = entityplayer.inventory.getCurrentItem();
 		if (item != null) {
 			if (item.itemID == Item.foodApple.id) {
-				this.chanceForTame += random.nextInt(3) + 1;
+				chanceForTame += random.nextInt(3) + 1;
 				item.consumeItem(entityplayer);
-				world.playSoundAtEntity(null, this, "creatures.eating", 1.0f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+				world.playSoundAtEntity(null, this, "creatures.eating", 1.0f, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
 			}
 			if (item.itemID == Item.dustSugar.id) {
-				this.chanceForTame += random.nextInt(6) + 1;
+				chanceForTame += random.nextInt(6) + 1;
 				item.consumeItem(entityplayer);
-				world.playSoundAtEntity(null, this, "creatures.eating", 1.0f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+				world.playSoundAtEntity(null, this, "creatures.eating", 1.0f, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
 			}
 			if (item.itemID == Item.foodAppleGold.id) {
-				this.chanceForTame += random.nextInt(100) + 1;
+				chanceForTame += random.nextInt(100) + 1;
 				item.consumeItem(entityplayer);
-				world.playSoundAtEntity(null, this, "creatures.eating", 1.0f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+				world.playSoundAtEntity(null, this, "creatures.eating", 1.0f, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
 			}
 
-			if (this.tamed && item.itemID == Item.saddle.id) {
-				this.saddled = true;
+			if (tamed && item.itemID == Item.saddle.id) {
+				saddled = true;
 				item.consumeItem(entityplayer);
 			}
 		} else {
@@ -50,30 +50,30 @@ public class EntityHorseUnicorn extends EntityHorse {
 	@Override
 	protected void updatePlayerActionState() {
 		super.updatePlayerActionState();
-		if (this.passenger != null && !this.tamed) {
-			EntityPlayer player = (EntityPlayer) this.passenger;
+		if (passenger != null && !tamed) {
+			EntityPlayer player = (EntityPlayer) passenger;
 
-			if (this.random.nextInt(6) == 0) {
-				this.annoyance += 30;
+			if (random.nextInt(6) == 0) {
+				annoyance += 30;
 			}
-			if (this.random.nextInt(10) == 0) {
-				this.tameCounter += 15 * chanceForTame;
+			if (random.nextInt(10) == 0) {
+				tameCounter += 15 * chanceForTame;
 			}
 
-			if (this.annoyance >= 300) {
-				this.annoyance = 0;
+			if (annoyance >= 300) {
+				annoyance = 0;
 				player.yd += 1F;
-				player.xd -= this.yRot * 0.0015F;
-				this.ejectRider();
-				this.world.playSoundAtEntity(null,
+				player.xd -= yRot * 0.0015F;
+				ejectRider();
+				world.playSoundAtEntity(null,
 					this,
 					"creatures.horsemad",
-					this.getSoundVolume(),
-					(this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+					getSoundVolume(),
+					(random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
 			}
 
 			if (tameCounter++ >= 1200) {
-				this.tamed = true;
+				tamed = true;
 
 				double randX = x + random.nextDouble();
 				double randY = y + random.nextDouble();

@@ -14,10 +14,10 @@ public class EntityBunny extends EntityAnimal {
 
 	public EntityBunny(World world) {
 		super(world);
-		this.heartsHalvesLife = 5;
-		this.jumpDelay = 0;
-		this.setSize(0.4F, 0.4F);
-		this.skinVariant = random.nextInt(5);
+		heartsHalvesLife = 5;
+		jumpDelay = 0;
+		setSize(0.4F, 0.4F);
+		skinVariant = random.nextInt(5);
 	}
 
 	@Override
@@ -32,33 +32,33 @@ public class EntityBunny extends EntityAnimal {
 
 	@Override
 	protected void updatePlayerActionState() {
-		++this.entityAge;
-		this.tryToDespawn();
-		if (this.isInWater() || this.isInLava()) this.yd += 0.15F;
+		++entityAge;
+		tryToDespawn();
+		if (isInWater() || isInLava()) yd += 0.15F;
 
-		if (this.onGround && this.jumpDelay-- <= 0) {
+		if (onGround && jumpDelay-- <= 0) {
 
-			this.jumpDelay = this.random.nextInt(20) + 10;
-			this.isJumping = true;
-			jumpState.start(this.tickCount);
+			jumpDelay = random.nextInt(20) + 10;
+			isJumping = true;
+			jumpState.start(tickCount);
 			world.playSoundAtEntity(null,
 				this,
 				"creatures.rabbitland",
 				1.0F,
-				(this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+				(random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
 
-			this.moveStrafing = 1.0F - this.random.nextFloat() * 2.0F;
-			this.moveForward = 1.0F;
-			this.roamRandomPath();
+			moveStrafing = 1.0F - random.nextFloat() * 2.0F;
+			moveForward = 1.0F;
+			roamRandomPath();
 		} else {
-			this.isJumping = false;
-			if (this.onGround) {
+			isJumping = false;
+			if (onGround) {
 				jumpState.stop();
-				this.moveStrafing = this.moveForward = 0.0F;
+				moveStrafing = moveForward = 0.0F;
 
-				if (this.random.nextFloat() < 0.05F) this.randomYawVelocity = (this.random.nextFloat() - 0.5F) * 20.0F;
-				this.yRot += this.randomYawVelocity;
-				this.xRot = this.defaultPitch;
+				if (random.nextFloat() < 0.05F) randomYawVelocity = (random.nextFloat() - 0.5F) * 20.0F;
+				yRot += randomYawVelocity;
+				xRot = defaultPitch;
 			}
 		}
 	}
@@ -67,24 +67,24 @@ public class EntityBunny extends EntityAnimal {
 	public boolean interact(EntityPlayer entityplayer) {
 		ItemStack item = entityplayer.inventory.getCurrentItem();
 		if (item == null && entityplayer.passenger == null) {
-			this.startRiding(entityplayer);
+			startRiding(entityplayer);
 			world.playSoundAtEntity(null,
 				this,
 				"creatures.rabbitland",
 				1.0F,
-				(this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+				(random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
 		} else if (entityplayer.passenger != null) {
 			entityplayer.ejectRider();
 			world.playSoundAtEntity(null,
 				this,
 				"creatures.rabbitland",
 				1.0F,
-				(this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+				(random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
 
-			this.setPos(entityplayer.x, entityplayer.y, entityplayer.z);
-			this.moveForward = 1.0F;
-			this.jump();
-			this.jumpState.start(tickCount);
+			setPos(entityplayer.x, entityplayer.y, entityplayer.z);
+			moveForward = 1.0F;
+			jump();
+			jumpState.start(tickCount);
 		}
 
 		return super.interact(entityplayer);
