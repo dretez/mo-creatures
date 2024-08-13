@@ -1,6 +1,18 @@
+# gradle
 .gradle/
+
+# IntelliJ IDEA
 .idea/
+
+# build
+bin/
 build/
 out/
 run/
 run-server/
+
+# lsp
+.settings/
+.classpath
+.factorypath
+.project
